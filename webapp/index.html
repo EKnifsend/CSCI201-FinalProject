@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" rel="stylesheet" type="text/css">
+<script src="https://kit.fontawesome.com/d665e24b75.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="global.css?1">
+<script src="global.js?2"></script>
+<title>CSCI 201 Final Project</title>
+<style>
+	#navbarGuest{
+		display: none;
+	}
+	#navbarUser{
+		display: none;
+	}
+	.row {
+  		display: flex;
+	}
+
+	.column {
+  		flex: 50%;
+	}
+	input.form-control {
+		width: 50%;
+	}
+	.matchupDiv{
+		background-color: #eee;
+	    padding: 50px;
+	    margin-top: 10px;
+	    margin-bottom: 20px;
+	}
+	#timer{
+
+	    padding-top: 75px;
+	    text-align: center;
+	    font-size: 50px;
+	}
+</style>
+<script>
+
+// create an object of teamID to their teamNames
+var teamNames = {};
+
+// create an object of teamID to their matchupID
+var matchupIDs = {};
+
+
+$(document).ready(function() {
+	// check which navbar to use
+	var cookie = getCookie("userID");
+	var guest;
+	// show guest navbar
+	if(cookie == null || cookie == ''){
+		$("#navbarGuest").css("display", "flex");
+		guest = true;
+	}
+	// show user navbar
+	else{
+		$("#navbarUser").css("display", "flex");
+		guest = false;
+	}	
+	
+	// the times when the games end
+	// i.e. at each time interval, we generate new random matchups
+	
+	var times = ["Nov 30, 2022 17:56:00", "Nov 30, 2022 18:01:00", "Nov 30, 2022 18:06:00"];
+	
+	var currentTime = new Date().getTime();
+	
+	for(var i = 0; i < times.length; i++){
+		gameEndTime = new Date(times[i]).getTime();
+		
+		// if game hasn't ended
+		// display timer for that game
+		if(currentTime < gameEndTime){
+			countDownTimer(times[i]);
+			break;
+		}
+	}
+	
+	setTimeout(() => {
+		display();
+	}, 1000)
+	
+	
+	
+	// on click of place bet button
+	$(document.body).on("click", ".bet", function(e){
+		e.preventDefault();
+		
+		if(guest){
+			alert("Please Login/Sign Up");
+		}else{
+			// store teamID, userID, and amount
+			// get value of button (which is the teamID)
+			var teamID = $(this).val()
+
+			// get the amount of bid
+			var amount = $("#" + teamID).val();
+			
+			// get matchupID
+			var matchupID = matchupIDs[teamID];
+			
+			if(amount == "" || amount == null || amount <= 0){
+				alert("Please enter valid amount for: " + teamNames[teamID]);
+			}
+			else{
+				var data = {};
+				data['userID'] = cookie;
+				data["teamID"] = teamID;
+				data["amount"] = amount;
+				data["matchupID"] = matchupID;
+				console.log(data);
+				
+				// ajax call to servlet
+				// ajax call
+				$.ajax({
+					url : 'BidServlet',
+					type: 'POST',
+					data : {
+						userID : cookie,
+						teamID : teamID,
+						amount : amount,
+						matchupID : matchupID
+					},
+					success : function(responseText) {
+						if(responseText == -1){
+							alert("FAILED: Balance not enough");
+						}else{
+							alert("SUCCESS: Bid " + amount + " for: " + teamNames[teamID]);
+						}
+						location.reload();
+					}
+				});
+			}
+			
+		}
+		
+	});
+	
+});
+
+</script>
+</head>
+<body>
+	<!--  bootstrap navbar for guest  -->
+	<nav id="navbarGuest" class="navbar navbar-expand-lg navbar-light fixed-top bg-light">
+	  <a class="navbar-brand" href="index.html">Sal Bids</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav ml-auto">
+	      <li class="nav-item">
+	        <a class="nav-link" href="index.html">Home</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="login.html">Login/Sign up</a>
+	      </li>
+	    </ul>
+	  </div>
+	</nav>
+	<!--  boostrap navbar for user -->
+	<nav id="navbarUser" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+	  <a class="navbar-brand" href="index.html">Sal Bids</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav ml-auto">
+	      <li class="nav-item">
+	        <a class="nav-link" href="index.html">Home</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="chat.html">Chat</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="profile.html" >Profile</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" onclick="deleteCookie()" style="cursor: pointer;">Logout</a>
+	      </li>
+	    </ul>
+	  </div>
+	</nav>
+	<div id="timer"></div>
+	<div id="games" style="margin: auto; padding-top: 20px;"></div>
+	
+</body>
+</html>

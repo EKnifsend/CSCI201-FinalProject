@@ -1,0 +1,41 @@
+body{
+	margin: 0px;
+	font-family: 'Open Sans';
+}
+h2{
+	font-size: 25px;
+	font-weight: 600;
+	margin: 0px;
+}
+h3{
+	font-size: 20px;
+	font-weight: 600p;
+	margin: 0px;
+}
+
+/* Navbar Styling */
+#navbar{
+	height: 40px;
+	background-color: red !important;
+	color: #fff;
+}
+a.navbar-brand{
+    color: #fff !important;
+}
+.navbar-light .navbar-nav .nav-link {
+    color: #fff !important;
+}
+.navbar.bg-light{
+	background-color: red !important;
+}
+
+/* www.w3schools.com/css/css_align.asp */
+.center{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.logout:hover{
+	cursor: pointer;
+}

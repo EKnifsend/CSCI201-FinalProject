@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chat Room</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" rel="stylesheet" type="text/css">
+<script src="https://kit.fontawesome.com/d665e24b75.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="global.css?1">
+<script src="global.js?1"></script>
+<script src="chat.js"></script>
+<style>
+#chatContainer{
+	background-color: #eee;
+    /* height: 100vh; */
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+    position: relative;
+    padding: 0px;
+}
+.messageInput{
+	width: 90%;
+	float: right;
+    border: 1px solid red;
+    border-radius: 20px;
+    padding: 5px;
+    padding-left: 10px;
+    
+}
+.messageForm{
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	background-color: #a7a7a7;
+	padding: 10px;
+}
+#chatContent{
+	overflow-y: overlay;
+	height: calc(100% - 50px);
+	padding: 20px;
+}
+
+.betInfo, h3{
+	padding-bottom: 10px;
+}
+
+</style>
+<script>
+
+$(document).ready(function(){
+	
+	// on click of user profile
+	$(document).on("click", ".username", function(){
+		$('#profileModal').modal('show');
+	})
+	
+});
+</script>
+</head>
+<body onload="connectToServer()">
+	<nav id="navbarUser" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+	  <a class="navbar-brand" href="index.html">Sal Bids</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav ml-auto">
+	      <li class="nav-item">
+	        <a class="nav-link" href="index.html">Home</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="chat.html">Chat</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="profile.html" >Profile</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" onclick="deleteCookie()" style="cursor: pointer;">Logout</a>
+	      </li>
+	    </ul>
+	  </div>
+	</nav>
+	<div id="chatContainer" class="container">
+	<div id="chatContent"></div>
+	<form class="messageForm" name="chatform" id="mForm">
+		<div class="row">
+			<div class="col-10"><input class="messageInput" type="text" name="message" placeholder="Message"/></div>
+			<div class="col-2"><button type="button" class="btn btn-danger" onclick="sendMessage()">Send</button></div>
+		</div>
+	</form>
+	</div>
+	
+	<!-- Boostrap Modal to display selected user profile -->
+	<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="profileModalLabel">Modal title</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body"></div>
+	    </div>
+	  </div>
+	</div>
+
+</body>
+</html>
